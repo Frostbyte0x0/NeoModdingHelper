@@ -1,0 +1,1 @@
+        event.put(EntityRegistry.^U.get(), ^PEntity.createAttributes().build());
