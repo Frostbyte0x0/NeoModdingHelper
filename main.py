@@ -1,93 +1,66 @@
-starting_options = ["entity", "item", "particle"]
+import json
+from helper import *
 
-FROSTBITE_LOCATION = "main/java/org/exodusstudio/frostbite/Frostbite.java"
-RENDERER_REGISTRY_OFFSET = 4
-LAYERS_LOCATION = "main/java/org/exodusstudio/frostbite/common/entity/client/layers/ModModelLayers.java"
-LAYERS_OFFSET = 1
-LAYER_REGISTRY_LOCATION = "main/java/org/exodusstudio/frostbite/common/entity/client/layers/ModModelLayers.java"
-LAYER_REGISTRY_OFFSET = 40
-RENDERER_FOLDER_LOCATION = "main/java/org/exodusstudio/frostbite/common/entity/client/renderers"
-MODEL_FOLDER_LOCATION = "main/java/org/exodusstudio/frostbite/common/entity/client/models"
-ENTITY_FOLDER_LOCATION = "main/java/org/exodusstudio/frostbite/common/entity/custom"
-ENTITY_REGISTRY_LOCATION = "main/java/org/exodusstudio/frostbite/common/registry/EntityRegistry.java"
-ENTITY_REGISTRY_OFFSET = 2
-ATTRIBUTE_REGISTRY_LOCATION = "main/java/org/exodusstudio/frostbite/common/event/ModEventBusEvents.java"
-ATTRIBUTE_REGISTRY_OFFSET = 25
+starting_options = ["entity", "item", "particle", "undo"]
+signature = "main/java/org/exodusstudio/frostbite"
 
-
-def camel_to_snake(string: str):
-    return "_".join([s.lower() for s in string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ")])
-
-def snake_to_camel(string: str):
-    return "".join([s.capitalize() for s in string.split("_")])
-
-
-def select_from_menu(options: list[str]) -> int:
-    for i in range(len(options)):
-        print(str(i+1) + ": " + options[i].capitalize())
-
-    out = int(input("> "))
-    return out - 1
-
-
-def load_template(file: str, camel_name: str):
-    with open("templates/" + file + ".txt", "r") as f:
-        template = f.read()
-
-    snake_name = camel_to_snake(camel_name)
-
-    template = (template.replace("^P", camel_name.capitalize())
-                .replace("^S", snake_name)
-                .replace("^U", snake_name.upper())
-                .replace("^C", camel_name))
-
-    return template
-
-
-def write_to_file(path_to_file: str, text: str, line_offset: int, from_bottom: bool = True):
-    with open(path_to_file, "r") as f:
-        lines = f.readlines()
-
-    index = len(lines) - line_offset if from_bottom else line_offset
-    lines.insert(index, text)
-
-    with open(path_to_file, "w") as f:
-        f.writelines(lines)
-
-
-def write_to_new_file(path: str, file_name: str, text: str):
-    with open(path + "/" + file_name, "w") as f:
-        f.write(text)
+locations = {}
+offsets = {}
+offsets_from_bottom = {}
 
 
 def start_entity(camel_name: str):
     # Model
     temp = load_template("entity_model", camel_name)
-    write_to_new_file(MODEL_FOLDER_LOCATION, f"{camel_name.capitalize()}Model.java", temp)
+    write_to_new_file(locations["MODEL_FOLDER_LOCATION"], f"{camel_name.capitalize()}Model.java", temp)
     # Renderer
     temp = load_template("entity_renderer", camel_name)
-    write_to_new_file(RENDERER_FOLDER_LOCATION, f"{camel_name.capitalize()}Renderer.java", temp)
+    write_to_new_file(locations["RENDERER_FOLDER_LOCATION"], f"{camel_name.capitalize()}Renderer.java", temp)
     # Layers
     temp = load_template("entity_layer", camel_name)
-    write_to_file(LAYERS_LOCATION, temp, LAYERS_OFFSET)
+    write_to_file(locations["LAYERS_LOCATION"], temp, offsets["LAYERS_OFFSET"], offsets_from_bottom["LAYERS_OFFSET"])
     # Actual entity class
     temp = load_template("entity_class", camel_name)
-    write_to_new_file(ENTITY_FOLDER_LOCATION, f"{camel_name.capitalize()}Entity.java", temp)
+    write_to_new_file(locations["ENTITY_FOLDER_LOCATION"], f"{camel_name.capitalize()}Entity.java", temp)
     # Register renderer
     temp = load_template("entity_renderer_registry", camel_name)
-    write_to_file(FROSTBITE_LOCATION, temp, RENDERER_REGISTRY_OFFSET)
+    write_to_file(locations["MAIN_MOD_FILE_LOCATION"], temp, offsets["RENDERER_REGISTRY_OFFSET"], offsets_from_bottom["RENDERER_REGISTRY_OFFSET"])
     # Register entity
     temp = load_template("entity_registry", camel_name)
-    write_to_file(ENTITY_REGISTRY_LOCATION, temp, ENTITY_REGISTRY_OFFSET)
+    write_to_file(locations["ENTITY_REGISTRY_LOCATION"], temp, offsets["ENTITY_REGISTRY_OFFSET"], offsets_from_bottom["ENTITY_REGISTRY_OFFSET"])
     # Register layer
     temp = load_template("entity_layer_registry", camel_name)
-    write_to_file(LAYER_REGISTRY_LOCATION, temp, LAYER_REGISTRY_OFFSET)
+    write_to_file(locations["LAYER_REGISTRY_LOCATION"], temp, offsets["LAYER_REGISTRY_OFFSET"], offsets_from_bottom["LAYER_REGISTRY_OFFSET"])
     # Register attribute
     temp = load_template("entity_attribute_registry", camel_name)
-    write_to_file(ATTRIBUTE_REGISTRY_LOCATION, temp, LAYER_REGISTRY_OFFSET)
+    write_to_file(locations["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
 
 
-def start_item():
+def undo_entity(camel_name: str):
+    # Model
+    os.remove(locations["MODEL_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Model.java")
+    # Renderer
+    os.remove(locations["RENDERER_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Renderer.java")
+    # Layers
+    temp = load_template("entity_layer", camel_name)
+    erase_from_file(locations["LAYERS_LOCATION"], temp)
+    # Actual entity class
+    os.remove(locations["ENTITY_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Entity.java")
+    # Register renderer
+    temp = load_template("entity_renderer_registry", camel_name)
+    erase_from_file(locations["MAIN_MOD_FILE_LOCATION"], temp)
+    # Register entity
+    temp = load_template("entity_registry", camel_name)
+    erase_from_file(locations["ENTITY_REGISTRY_LOCATION"], temp)
+    # Register layer
+    temp = load_template("entity_layer_registry", camel_name)
+    erase_from_file(locations["LAYER_REGISTRY_LOCATION"], temp)
+    # Register attribute
+    temp = load_template("entity_attribute_registry", camel_name)
+    erase_from_file(locations["ATTRIBUTE_REGISTRY_LOCATION"], temp)
+
+
+def start_item(camel_name: str):
     # Item
     # - Item json
     # - Model json
@@ -96,20 +69,97 @@ def start_item():
     ...
 
 
-def start_particle():
+def undo_item(camel_name: str):
+    # Item
+    # - Item json
+    # - Model json
+    # - Custom ? custom class : just registry
+    # - Register
     ...
 
 
+def start_particle(camel_name: str):
+    ...
+
+
+def undo_particle(camel_name: str):
+    ...
+
+
+def undo():
+    with open("last_action.txt", "r") as f:
+        options = f.read().split(" ")
+
+    option = options[0]
+    name = options[1]
+
+    match option:
+        case "entity":
+            undo_entity(name)
+        case "item":
+            undo_item(name)
+        case "particle":
+            undo_particle(name)
+
+
+def save_last_action(last_action: str):
+    with open("last_action.txt", "w") as f:
+        f.write(last_action)
+
+
+def define_constants(folder: str):
+    global signature
+    global locations
+    global offsets
+    global offsets_from_bottom
+
+    signature = get_all_folders("../" + folder + "/src/main/java")[0] + "/"
+    signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0] + "/"
+    signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0]
+    signature = "../" + folder + "/src/main/java/" + signature + "/"
+
+    with open("constants.json", "r") as f:
+        d = json.loads(f.read())
+        locations_saved = d["locations"]
+        offsets = d["offsets"]
+        offsets_from_bottom = d["offsets_from_bottom"]
+
+    locations["MAIN_MOD_FILE_LOCATION"] = signature + [entry.name for entry in os.scandir(signature) if
+                                          (not entry.is_dir() and entry.name.endswith(".java"))][0]
+    locations["LAYERS_LOCATION"] = signature + "common/entity/client/layers/ModModelLayers.java"
+    locations["LAYER_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
+    locations["RENDERER_FOLDER_LOCATION"] = signature + "common/entity/client/renderers"
+    locations["MODEL_FOLDER_LOCATION"] = signature + "common/entity/client/models"
+    locations["ENTITY_FOLDER_LOCATION"] = signature + "common/entity/custom"
+    locations["ENTITY_REGISTRY_LOCATION"] = signature + "common/registry/EntityRegistry.java"
+    locations["ATTRIBUTE_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
+
+    for key, value in locations_saved.items():
+        if not value == "":
+            locations[key] = value
+
+
 def start():
-    name = input("Name (in camel case) > ")
+    name = input("Name of the new thing (in camel case) > ")
+    last_action = ""
     match select_from_menu(starting_options):
         case 0:
             start_entity(name)
+            last_action = "entity "
         case 1:
-            start_item()
+            start_item(name)
+            last_action = "item "
         case 2:
-            start_particle()
+            start_particle(name)
+            last_action = "particle "
+        case 3:
+            undo()
+    save_last_action(last_action + name)
 
 
 if __name__ == '__main__':
+    projects = get_all_folders("../")
+    print("Which project?")
+    project_folder = projects[select_from_menu(projects)]
+    define_constants(project_folder)
     start()
