@@ -12,8 +12,8 @@
   "offsets": {
     "RENDERER_REGISTRY_OFFSET": 4,
     "LAYERS_OFFSET": 1,
-    "LAYER_REGISTRY_OFFSET": 38,
-    "ENTITY_REGISTRY_OFFSET": 2,
+    "LAYER_REGISTRY_OFFSET": 40,
+    "ENTITY_REGISTRY_OFFSET": 1,
     "ATTRIBUTE_REGISTRY_OFFSET": 25
   },
   "offsets_from_bottom": {

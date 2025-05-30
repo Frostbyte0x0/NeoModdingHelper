@@ -2,7 +2,8 @@ import json
 from helper import *
 
 starting_options = ["entity", "item", "particle", "undo"]
-signature = "main/java/org/exodusstudio/frostbite"
+signature = ""
+signature_assets = ""
 
 locations = {}
 offsets = {}
@@ -34,6 +35,7 @@ def start_entity(camel_name: str):
     # Register attribute
     temp = load_template("entity_attribute_registry", camel_name)
     write_to_file(locations["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
+    save_last_action("entity " + camel_name)
 
 
 def undo_entity(camel_name: str):
@@ -63,10 +65,15 @@ def undo_entity(camel_name: str):
 def start_item(camel_name: str):
     # Item
     # - Item json
+    temp = load_template("item_json", camel_name)
+    write_to_new_file("", f"{camel_name.capitalize()}.json", temp)
     # - Model json
     # - Custom ? custom class : just registry
     # - Register
-    ...
+    temp = load_template("entity_registry", camel_name)
+    write_to_file(locations["ENTITY_REGISTRY_LOCATION"], temp, offsets["ENTITY_REGISTRY_OFFSET"],
+                  offsets_from_bottom["ENTITY_REGISTRY_OFFSET"])
+    save_last_action("item " + camel_name)
 
 
 def undo_item(camel_name: str):
@@ -79,7 +86,7 @@ def undo_item(camel_name: str):
 
 
 def start_particle(camel_name: str):
-    ...
+    save_last_action("particle " + camel_name)
 
 
 def undo_particle(camel_name: str):
@@ -89,6 +96,10 @@ def undo_particle(camel_name: str):
 def undo():
     with open("last_action.txt", "r") as f:
         options = f.read().split(" ")
+
+    if len(options) == 3:
+        redo(options[2], options[1])
+        return
 
     option = options[0]
     name = options[1]
@@ -100,6 +111,19 @@ def undo():
             undo_item(name)
         case "particle":
             undo_particle(name)
+    save_last_action("undo " + option + " " + name)
+
+
+def redo(name: str, option: str):
+    match option:
+        case "entity":
+            start_entity(name)
+        case "item":
+            start_item(name)
+        case "particle":
+            start_particle(name)
+        case "undo":
+            undo()
 
 
 def save_last_action(last_action: str):
@@ -109,10 +133,13 @@ def save_last_action(last_action: str):
 
 def define_constants(folder: str):
     global signature
+    global signature_assets
     global locations
     global offsets
     global offsets_from_bottom
 
+    signature_assets = ("../" + folder + "/src/main/resources/assets" +
+                        get_all_folders("../" + folder + "/src/main/resources/assets")[0])
     signature = get_all_folders("../" + folder + "/src/main/java")[0] + "/"
     signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0] + "/"
     signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0]
@@ -140,21 +167,18 @@ def define_constants(folder: str):
 
 
 def start():
-    name = input("Name of the new thing (in camel case) > ")
-    last_action = ""
     match select_from_menu(starting_options):
         case 0:
+            name = input("Name of the new thing (in camel case) > ")
             start_entity(name)
-            last_action = "entity "
         case 1:
+            name = input("Name of the new thing (in camel case) > ")
             start_item(name)
-            last_action = "item "
         case 2:
+            name = input("Name of the new thing (in camel case) > ")
             start_particle(name)
-            last_action = "particle "
         case 3:
             undo()
-    save_last_action(last_action + name)
 
 
 if __name__ == '__main__':

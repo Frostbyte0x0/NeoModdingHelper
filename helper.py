@@ -49,7 +49,7 @@ def erase_from_file(path_to_file: str, text: str):
     with open(path_to_file, "r") as f:
         txt = f.read()
 
-    txt.replace(text, "")
+    txt = txt.replace(text, "")
 
     with open(path_to_file, "w") as f:
         f.writelines(txt)
