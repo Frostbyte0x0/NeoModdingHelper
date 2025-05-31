@@ -5,84 +5,106 @@ starting_options = ["entity", "item", "particle", "undo"]
 signature = ""
 signature_assets = ""
 
-locations = {}
+constants = {}
 offsets = {}
 offsets_from_bottom = {}
 
 
 def start_entity(camel_name: str):
     # Model
-    temp = load_template("entity_model", camel_name)
-    write_to_new_file(locations["MODEL_FOLDER_LOCATION"], f"{camel_name.capitalize()}Model.java", temp)
+    temp = load_template("entity_model", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_new_file(constants["MODEL_FOLDER_LOCATION"], f"{camel_name.capitalize()}Model.java", temp)
     # Renderer
-    temp = load_template("entity_renderer", camel_name)
-    write_to_new_file(locations["RENDERER_FOLDER_LOCATION"], f"{camel_name.capitalize()}Renderer.java", temp)
+    temp = load_template("entity_renderer", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_new_file(constants["RENDERER_FOLDER_LOCATION"], f"{camel_name.capitalize()}Renderer.java", temp)
     # Layers
-    temp = load_template("entity_layer", camel_name)
-    write_to_file(locations["LAYERS_LOCATION"], temp, offsets["LAYERS_OFFSET"], offsets_from_bottom["LAYERS_OFFSET"])
+    temp = load_template("entity_layer", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(constants["LAYERS_LOCATION"], temp, offsets["LAYERS_OFFSET"], offsets_from_bottom["LAYERS_OFFSET"])
     # Actual entity class
-    temp = load_template("entity_class", camel_name)
-    write_to_new_file(locations["ENTITY_FOLDER_LOCATION"], f"{camel_name.capitalize()}Entity.java", temp)
+    temp = load_template("entity_class", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_name.capitalize()}Entity.java", temp)
     # Register renderer
-    temp = load_template("entity_renderer_registry", camel_name)
-    write_to_file(locations["MAIN_MOD_FILE_LOCATION"], temp, offsets["RENDERER_REGISTRY_OFFSET"], offsets_from_bottom["RENDERER_REGISTRY_OFFSET"])
+    temp = load_template("entity_renderer_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(constants["MAIN_MOD_FILE_LOCATION"], temp, offsets["RENDERER_REGISTRY_OFFSET"], offsets_from_bottom["RENDERER_REGISTRY_OFFSET"])
     # Register entity
-    temp = load_template("entity_registry", camel_name)
-    write_to_file(locations["ENTITY_REGISTRY_LOCATION"], temp, offsets["ENTITY_REGISTRY_OFFSET"], offsets_from_bottom["ENTITY_REGISTRY_OFFSET"])
+    temp = load_template("entity_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(constants["ENTITY_REGISTRY_LOCATION"], temp, offsets["ENTITY_REGISTRY_OFFSET"], offsets_from_bottom["ENTITY_REGISTRY_OFFSET"])
     # Register layer
-    temp = load_template("entity_layer_registry", camel_name)
-    write_to_file(locations["LAYER_REGISTRY_LOCATION"], temp, offsets["LAYER_REGISTRY_OFFSET"], offsets_from_bottom["LAYER_REGISTRY_OFFSET"])
+    temp = load_template("entity_layer_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(constants["LAYER_REGISTRY_LOCATION"], temp, offsets["LAYER_REGISTRY_OFFSET"], offsets_from_bottom["LAYER_REGISTRY_OFFSET"])
     # Register attribute
-    temp = load_template("entity_attribute_registry", camel_name)
-    write_to_file(locations["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
+    temp = load_template("entity_attribute_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(constants["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
     save_last_action("entity " + camel_name)
 
 
 def undo_entity(camel_name: str):
     # Model
-    os.remove(locations["MODEL_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Model.java")
+    erase_file(constants["MODEL_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Model.java")
     # Renderer
-    os.remove(locations["RENDERER_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Renderer.java")
+    erase_file(constants["RENDERER_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Renderer.java")
     # Layers
-    temp = load_template("entity_layer", camel_name)
-    erase_from_file(locations["LAYERS_LOCATION"], temp)
+    temp = load_template("entity_layer", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(constants["LAYERS_LOCATION"], temp)
     # Actual entity class
-    os.remove(locations["ENTITY_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Entity.java")
+    erase_file(constants["ENTITY_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Entity.java")
     # Register renderer
-    temp = load_template("entity_renderer_registry", camel_name)
-    erase_from_file(locations["MAIN_MOD_FILE_LOCATION"], temp)
+    temp = load_template("entity_renderer_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(constants["MAIN_MOD_FILE_LOCATION"], temp)
     # Register entity
-    temp = load_template("entity_registry", camel_name)
-    erase_from_file(locations["ENTITY_REGISTRY_LOCATION"], temp)
+    temp = load_template("entity_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(constants["ENTITY_REGISTRY_LOCATION"], temp)
     # Register layer
-    temp = load_template("entity_layer_registry", camel_name)
-    erase_from_file(locations["LAYER_REGISTRY_LOCATION"], temp)
+    temp = load_template("entity_layer_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(constants["LAYER_REGISTRY_LOCATION"], temp)
     # Register attribute
-    temp = load_template("entity_attribute_registry", camel_name)
-    erase_from_file(locations["ATTRIBUTE_REGISTRY_LOCATION"], temp)
+    temp = load_template("entity_attribute_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(constants["ATTRIBUTE_REGISTRY_LOCATION"], temp)
 
 
 def start_item(camel_name: str):
-    # Item
-    # - Item json
-    temp = load_template("item_json", camel_name)
-    write_to_new_file("", f"{camel_name.capitalize()}.json", temp)
-    # - Model json
-    # - Custom ? custom class : just registry
-    # - Register
-    temp = load_template("entity_registry", camel_name)
-    write_to_file(locations["ENTITY_REGISTRY_LOCATION"], temp, offsets["ENTITY_REGISTRY_OFFSET"],
-                  offsets_from_bottom["ENTITY_REGISTRY_OFFSET"])
-    save_last_action("item " + camel_name)
+    snake_name = camel_to_snake(camel_name)
+    # Item json
+    temp = load_template("item_json", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_new_file(signature_assets + "items", f"{snake_name}.json", temp)
+    # Model json
+    temp = load_template("item_model", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_new_file(signature_assets + "models/item", f"{snake_name}.json", temp)
+    # Lang
+    temp = load_template("item_lang", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    write_to_file(signature_assets + "lang/en_us.json", temp, 1, True)
+    # Custom ? custom class : just registry
+    if "y" in input("Is it a custom item (should a custom class be made)? (y/n) > ").lower():
+        temp = load_template("item_class", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+        write_to_new_file(constants["ITEM_FOLDER_LOCATION"], f"{camel_name.capitalize()}Item.java", temp)
+        temp = load_template("item_registry_custom", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+        write_to_file(constants["ITEM_REGISTRY_LOCATION"], temp, offsets["ITEM_REGISTRY_OFFSET"],
+                      offsets_from_bottom["ITEM_REGISTRY_OFFSET"])
+        save_last_action("item " + camel_name + " custom")
+    else:
+        temp = load_template("item_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+        write_to_file(constants["ITEM_REGISTRY_LOCATION"], temp, offsets["ITEM_REGISTRY_OFFSET"],
+                      offsets_from_bottom["ITEM_REGISTRY_OFFSET"])
+        save_last_action("item " + camel_name + " customn't")
 
 
-def undo_item(camel_name: str):
-    # Item
-    # - Item json
-    # - Model json
-    # - Custom ? custom class : just registry
-    # - Register
-    ...
+def undo_item(camel_name: str, is_custom: bool):
+    snake_name = camel_to_snake(camel_name)
+    # Item json
+    erase_file(signature_assets + f"items/{snake_name}.json")
+    # Model json
+    erase_file(signature_assets + f"models/item/{snake_name}.json")
+    # Custom ? custom class : just registry
+    if is_custom:
+        erase_file(constants["ITEM_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Item.java")
+        temp = load_template("item_registry_custom", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+        erase_from_file(constants["ITEM_REGISTRY_LOCATION"], temp)
+    else:
+        temp = load_template("item_registry", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+        erase_from_file(constants["ITEM_REGISTRY_LOCATION"], temp)
+    # Lang
+    temp = load_template("item_lang", camel_name, constants["MOD_ID"], constants["PACKAGE"])
+    erase_from_file(signature_assets + "lang/en_us.json", temp)
 
 
 def start_particle(camel_name: str):
@@ -97,10 +119,6 @@ def undo():
     with open("last_action.txt", "r") as f:
         options = f.read().split(" ")
 
-    if len(options) == 3:
-        redo(options[2], options[1])
-        return
-
     option = options[0]
     name = options[1]
 
@@ -108,9 +126,12 @@ def undo():
         case "entity":
             undo_entity(name)
         case "item":
-            undo_item(name)
+            undo_item(name, options[2] == "custom")
         case "particle":
             undo_particle(name)
+        case "undo":
+            redo(options[2], options[1])
+            return
     save_last_action("undo " + option + " " + name)
 
 
@@ -134,36 +155,41 @@ def save_last_action(last_action: str):
 def define_constants(folder: str):
     global signature
     global signature_assets
-    global locations
+    global constants
     global offsets
     global offsets_from_bottom
 
-    signature_assets = ("../" + folder + "/src/main/resources/assets" +
-                        get_all_folders("../" + folder + "/src/main/resources/assets")[0])
+    signature_assets = ("../" + folder + "/src/main/resources/assets/" +
+                        get_all_folders("../" + folder + "/src/main/resources/assets")[0]) + "/"
     signature = get_all_folders("../" + folder + "/src/main/java")[0] + "/"
     signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0] + "/"
     signature += get_all_folders("../" + folder + "/src/main/java/" + signature)[0]
-    signature = "../" + folder + "/src/main/java/" + signature + "/"
+    signature = "../" + folder + "/src/main/java/" + signature
+    constants["PACKAGE"] = signature.replace("../" + folder + "/src/main/java/", "").replace("/", ".")
+    signature += "/"
 
     with open("constants.json", "r") as f:
         d = json.loads(f.read())
-        locations_saved = d["locations"]
+        saved = d["constants"]
         offsets = d["offsets"]
         offsets_from_bottom = d["offsets_from_bottom"]
 
-    locations["MAIN_MOD_FILE_LOCATION"] = signature + [entry.name for entry in os.scandir(signature) if
+    constants["MAIN_MOD_FILE_LOCATION"] = signature + [entry.name for entry in os.scandir(signature) if
                                           (not entry.is_dir() and entry.name.endswith(".java"))][0]
-    locations["LAYERS_LOCATION"] = signature + "common/entity/client/layers/ModModelLayers.java"
-    locations["LAYER_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
-    locations["RENDERER_FOLDER_LOCATION"] = signature + "common/entity/client/renderers"
-    locations["MODEL_FOLDER_LOCATION"] = signature + "common/entity/client/models"
-    locations["ENTITY_FOLDER_LOCATION"] = signature + "common/entity/custom"
-    locations["ENTITY_REGISTRY_LOCATION"] = signature + "common/registry/EntityRegistry.java"
-    locations["ATTRIBUTE_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
+    constants["LAYERS_LOCATION"] = signature + "common/entity/client/layers/ModModelLayers.java"
+    constants["LAYER_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
+    constants["RENDERER_FOLDER_LOCATION"] = signature + "common/entity/client/renderers"
+    constants["MODEL_FOLDER_LOCATION"] = signature + "common/entity/client/models"
+    constants["ENTITY_FOLDER_LOCATION"] = signature + "common/entity/custom"
+    constants["ENTITY_REGISTRY_LOCATION"] = signature + "common/registry/EntityRegistry.java"
+    constants["ATTRIBUTE_REGISTRY_LOCATION"] = signature + "common/event/ModEventBusEvents.java"
+    constants["ITEM_REGISTRY_LOCATION"] = signature + "common/registry/ItemRegistry.java"
+    constants["ITEM_FOLDER_LOCATION"] = signature + "common/item/custom"
+    constants["MOD_ID"] = saved["MOD_ID"] if saved["MOD_ID"] != "" else input("What is the mod id? > ")
 
-    for key, value in locations_saved.items():
+    for key, value in saved.items():
         if not value == "":
-            locations[key] = value
+            constants[key] = value
 
 
 def start():

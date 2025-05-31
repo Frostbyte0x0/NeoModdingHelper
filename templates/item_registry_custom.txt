@@ -1,0 +1,3 @@
+    public static final DeferredItem<Item> ^U =
+            ITEMS.register("^S", (id) -> new ^PItem(new Item.Properties()
+                    .setId(ResourceKey.create(Registries.ITEM, id))));
