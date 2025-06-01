@@ -1,7 +1,7 @@
 import json
 from helper import *
 
-starting_options = ["entity", "item", "particle", "undo"]
+starting_options = ["entity", "item", "block", "particle", "undo"]
 signature = ""
 signature_assets = ""
 
@@ -107,6 +107,14 @@ def undo_item(camel_name: str, is_custom: bool):
     erase_from_file(signature_assets + "lang/en_us.json", temp)
 
 
+def start_block(camel_name: str):
+    save_last_action("block " + camel_name)
+
+
+def undo_block(camel_name: str, is_custom: bool):
+    ...
+
+
 def start_particle(camel_name: str):
     save_last_action("particle " + camel_name)
 
@@ -127,6 +135,8 @@ def undo():
             undo_entity(name)
         case "item":
             undo_item(name, options[2] == "custom")
+        case "block":
+            undo_block(name, options[2] == "custom")
         case "particle":
             undo_particle(name)
         case "undo":
@@ -141,6 +151,8 @@ def redo(name: str, option: str):
             start_entity(name)
         case "item":
             start_item(name)
+        case "block":
+            start_block(name)
         case "particle":
             start_particle(name)
         case "undo":
@@ -189,7 +201,10 @@ def define_constants(folder: str):
 
     for key, value in saved.items():
         if not value == "":
-            constants[key] = value
+            if "LOCATION" in key:
+                constants[key] = signature + value
+            else:
+                constants[key] = value
 
 
 def start():
@@ -202,8 +217,11 @@ def start():
             start_item(name)
         case 2:
             name = input("Name of the new thing (in camel case) > ")
-            start_particle(name)
+            start_block(name)
         case 3:
+            name = input("Name of the new thing (in camel case) > ")
+            start_particle(name)
+        case 4:
             undo()
 
 
