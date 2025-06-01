@@ -1,7 +1,7 @@
 {
   "constants": {
-    "PACKAGE": "",
-    "MOD_ID": "",
+    "PACKAGE": "org.exodusstudio.frostbite",
+    "MOD_ID": "frostbite",
     "MAIN_MOD_FILE_LOCATION": "",
     "LAYERS_LOCATION": "",
     "LAYER_REGISTRY_LOCATION": "",
@@ -11,7 +11,10 @@
     "ENTITY_REGISTRY_LOCATION": "",
     "ATTRIBUTE_REGISTRY_LOCATION": "",
     "ITEM_REGISTRY_LOCATION": "",
-    "ITEM_FOLDER_LOCATION": ""
+    "ITEM_FOLDER_LOCATION": "",
+    "PARTICLE_FOLDER_LOCATION": "",
+    "CLIENT_EVENT_LOCATION": "",
+    "PARTICLE_REGISTRY_LOCATION": ""
   },
   "offsets": {
     "RENDERER_REGISTRY_OFFSET": 4,
@@ -19,7 +22,9 @@
     "LAYER_REGISTRY_OFFSET": 40,
     "ENTITY_REGISTRY_OFFSET": 1,
     "ATTRIBUTE_REGISTRY_OFFSET": 25,
-    "ITEM_REGISTRY_OFFSET": 1
+    "ITEM_REGISTRY_OFFSET": 1,
+    "PARTICLE_REGISTRY_OFFSET": 1,
+    "CLIENT_EVENT_OFFSET": 2
   },
   "offsets_from_bottom": {
     "RENDERER_REGISTRY_OFFSET": true,
@@ -27,6 +32,8 @@
     "LAYER_REGISTRY_OFFSET": true,
     "ENTITY_REGISTRY_OFFSET": true,
     "ATTRIBUTE_REGISTRY_OFFSET": true,
-    "ITEM_REGISTRY_OFFSET": true
+    "ITEM_REGISTRY_OFFSET": true,
+    "PARTICLE_REGISTRY_OFFSET": true,
+    "CLIENT_EVENT_OFFSET": true
   }
 }

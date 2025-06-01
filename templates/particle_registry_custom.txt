@@ -1,0 +1,3 @@
+
+    public static final Supplier<^PParticleType> ^U_PARTICLE =
+            PARTICLE_TYPES.register("^S", () -> new ^PParticleType(false));

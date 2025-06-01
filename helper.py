@@ -1,4 +1,8 @@
 import os
+import json
+
+mod_id = ""
+package = ""
 
 def camel_to_snake(string: str):
     return "_".join([s.lower() for s in string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ")])
@@ -15,7 +19,16 @@ def select_from_menu(options: list[str]) -> int:
     return out - 1
 
 
-def load_template(file: str, camel_name: str, mod_id: str, package: str):
+def load_template(file: str, camel_name: str):
+    global mod_id
+    global package
+
+    if mod_id == "" or package == "":
+        with open("constants.json", "r") as f:
+            d = json.load(f)
+            mod_id = d["constants"]["MOD_ID"]
+            package = d["constants"]["PACKAGE"]
+
     with open("templates/" + file + ".txt", "r") as f:
         template = f.read()
 

@@ -1,0 +1,1 @@
+        event.registerSpriteSet(ParticleRegistry.^U_PARTICLE.get(), ^PParticle.Provider::new);
