@@ -218,11 +218,11 @@ def undo():
         case "entity":
             undo_entity(name)
         case "item":
-            undo_item(name, options["custom"])
+            undo_item(name, options["is_custom"])
         case "block":
-            undo_block(name, options["custom"])
+            undo_block(name, options["is_custom"])
         case "particle":
-            undo_particle(name, options["custom"])
+            undo_particle(name, options["is_custom"])
         case "undo":
             redo(name, option.split(" ")[1])
             return
