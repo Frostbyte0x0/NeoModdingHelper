@@ -34,7 +34,7 @@ def start_entity(camel_name: str):
     # Register attribute
     temp = load_template("entity_attribute_registry", camel_name)
     write_to_file(constants["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
-    save_last_action("entity " + camel_name)
+    save_last_action("entity", camel_name, True)
 
 
 def undo_entity(camel_name: str):
@@ -79,12 +79,12 @@ def start_item(camel_name: str):
         temp = load_template("item_registry_custom", camel_name)
         write_to_file(constants["ITEM_REGISTRY_LOCATION"], temp, offsets["ITEM_REGISTRY_OFFSET"],
                       offsets_from_bottom["ITEM_REGISTRY_OFFSET"])
-        save_last_action("item " + camel_name + " custom")
+        save_last_action("item", camel_name, True)
     else:
         temp = load_template("item_registry", camel_name)
         write_to_file(constants["ITEM_REGISTRY_LOCATION"], temp, offsets["ITEM_REGISTRY_OFFSET"],
                       offsets_from_bottom["ITEM_REGISTRY_OFFSET"])
-        save_last_action("item " + camel_name + " customn't")
+        save_last_action("item", camel_name, False)
 
 
 def undo_item(camel_name: str, is_custom: bool):
@@ -107,11 +107,51 @@ def undo_item(camel_name: str, is_custom: bool):
 
 
 def start_block(camel_name: str):
-    save_last_action("block " + camel_name)
+    snake_name = camel_to_snake(camel_name)
+    # Blockstate json
+    temp = load_template("block_blockstate_json", camel_name)
+    write_to_new_file(signature_assets + "blockstates", f"{snake_name}.json", temp)
+    # Model json
+    temp = load_template("block_model", camel_name)
+    write_to_new_file(signature_assets + "models/block", f"{snake_name}.json", temp)
+    # Lang
+    temp = load_template("block_lang", camel_name)
+    write_to_file(signature_assets + "lang/en_us.json", temp, 1, True)
+    # Custom ? custom class : just registry
+    if "y" in input("Is it a custom block (should a custom class be made)? (y/n) > ").lower():
+        temp = load_template("block_class", camel_name)
+        write_to_new_file(constants["BLOCK_FOLDER_LOCATION"], f"{camel_name.capitalize()}Block.java", temp)
+        temp = load_template("block_registry_custom", camel_name)
+        write_to_file(constants["BLOCK_REGISTRY_LOCATION"], temp, offsets["BLOCK_REGISTRY_OFFSET"],
+                      offsets_from_bottom["BLOCK_REGISTRY_OFFSET"])
+        save_last_action("block", camel_name, True)
+    else:
+        temp = load_template("block_registry_simple", camel_name)
+        write_to_file(constants["BLOCK_REGISTRY_LOCATION"], temp, offsets["BLOCK_REGISTRY_OFFSET"],
+                      offsets_from_bottom["BLOCK_REGISTRY_OFFSET"])
+        save_last_action("block", camel_name, False)
 
 
 def undo_block(camel_name: str, is_custom: bool):
-    ...
+    snake_name = camel_to_snake(camel_name)
+    # Blockstate json
+    erase_file(signature_assets + f"blockstates/{snake_name}.json")
+    # Model json
+    erase_file(signature_assets + f"models/block/{snake_name}.json")
+    # Lang
+    temp = load_template("block_lang", camel_name)
+    erase_from_file(signature_assets + "lang/en_us.json", temp)
+    # Custom ? custom class : just registry
+    if "y" in input("Is it a custom block (should a custom class be made)? (y/n) > ").lower():
+        temp = load_template("block_class", camel_name)
+        erase_file(constants["BLOCK_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Block.java")
+        temp = load_template("block_registry_custom", camel_name)
+        erase_from_file(constants["BLOCK_REGISTRY_LOCATION"], temp)
+        save_last_action("block", camel_name, True)
+    else:
+        temp = load_template("block_registry_simple", camel_name)
+        erase_from_file(constants["BLOCK_REGISTRY_LOCATION"], temp)
+        save_last_action("block", camel_name, False)
 
 
 def start_particle(camel_name: str):
@@ -126,7 +166,7 @@ def start_particle(camel_name: str):
         temp = load_template("particle_registry_custom", camel_name)
         write_to_file(constants["PARTICLE_REGISTRY_LOCATION"], temp, offsets["PARTICLE_REGISTRY_OFFSET"],
                       offsets_from_bottom["PARTICLE_REGISTRY_OFFSET"])
-        save_last_action("particle " + camel_name + " custom")
+        save_last_action("particle", camel_name, True)
     else:
         # Particle class
         temp = load_template("particle_class_simple", camel_name)
@@ -135,7 +175,7 @@ def start_particle(camel_name: str):
         temp = load_template("particle_registry_simple", camel_name)
         write_to_file(constants["PARTICLE_REGISTRY_LOCATION"], temp, offsets["PARTICLE_REGISTRY_OFFSET"],
                       offsets_from_bottom["PARTICLE_REGISTRY_OFFSET"])
-        save_last_action("particle " + camel_name + " customn't")
+        save_last_action("particle", camel_name, False)
     # Provider Registry
     temp = load_template("particle_provider_registry", camel_name)
     write_to_file(constants["CLIENT_EVENT_LOCATION"], temp, offsets["CLIENT_EVENT_OFFSET"],
@@ -146,29 +186,47 @@ def start_particle(camel_name: str):
 
 
 def undo_particle(camel_name: str, is_custom: bool):
-    ...
+    if is_custom:
+        # if not SimpleParticleType -> Particle type class
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}ParticleType.java")
+        # Particle class
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Particle.java")
+        # Registry
+        temp = load_template("particle_registry_custom", camel_name)
+        erase_from_file(constants["PARTICLE_REGISTRY_LOCATION"], temp)
+    else:
+        # Particle class
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Particle.java")
+        # Registry
+        temp = load_template("particle_registry_simple", camel_name)
+        erase_from_file(constants["PARTICLE_REGISTRY_LOCATION"], temp)
+    # Provider registry
+    temp = load_template("particle_provider_registry", camel_name)
+    erase_from_file(constants["CLIENT_EVENT_LOCATION"], temp)
+    # Particle json
+    erase_file(signature_assets + "particles" + f"/{camel_to_snake(camel_name)}.json")
 
 
 def undo():
-    with open("last_action.txt", "r") as f:
-        options = f.read().split(" ")
+    with open("last_action.json", "r") as f:
+        options = json.load(f)
 
-    option = options[0]
-    name = options[1]
+    option = options["last_action"]
+    name = options["name"]
 
-    match option:
+    match option.split(" ")[0]:
         case "entity":
             undo_entity(name)
         case "item":
-            undo_item(name, options[2] == "custom")
+            undo_item(name, options["custom"])
         case "block":
-            undo_block(name, options[2] == "custom")
+            undo_block(name, options["custom"])
         case "particle":
-            undo_particle(name, options[2] == "custom")
+            undo_particle(name, options["custom"])
         case "undo":
-            redo(options[2], options[1])
+            redo(name, option.split(" ")[1])
             return
-    save_last_action("undo " + option + " " + name)
+    save_last_action("undo " + option, name, False)
 
 
 def redo(name: str, option: str):
@@ -183,11 +241,6 @@ def redo(name: str, option: str):
             start_particle(name)
         case "undo":
             undo()
-
-
-def save_last_action(last_action: str):
-    with open("last_action.txt", "w") as f:
-        f.write(last_action)
 
 
 def define_constants(folder: str):

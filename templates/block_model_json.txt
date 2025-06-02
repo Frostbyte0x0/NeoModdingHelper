@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block",
+  "textures": {
+    "all": "^M:block/^S"
+  }
+}

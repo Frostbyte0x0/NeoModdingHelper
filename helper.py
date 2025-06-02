@@ -56,7 +56,7 @@ def write_to_file(path_to_file: str, text: str, line_offset: int, from_bottom: b
 
         with open(path_to_file, "w") as f:
             f.writelines(lines)
-    except:
+    except FileNotFoundError:
         print(f"Failed to write to file '{path_to_file}'")
 
 
@@ -65,7 +65,7 @@ def write_to_new_file(path: str, file_name: str, text: str):
     try:
         with open(path + "/" + file_name, "w") as f:
             f.write(text)
-    except:
+    except FileNotFoundError:
         print(f"Failed to create new file '{path + '/' + file_name}'")
 
 
@@ -79,7 +79,7 @@ def erase_from_file(path_to_file: str, text: str):
 
         with open(path_to_file, "w") as f:
             f.writelines(txt)
-    except:
+    except FileNotFoundError:
         print(f"Failed to erase from file '{path_to_file}'")
 
 
@@ -97,3 +97,10 @@ def get_all_folders(path: str):
 def get_all_files(path: str):
     return [entry.name for entry in os.scandir(path) if not entry.is_dir()]
 
+
+def save_last_action(last_action: str, name: str, is_custom: bool):
+    d = {"last_action": last_action,
+         "name": name,
+         "is_custom": is_custom}
+    with open("last_action.json", "w") as f:
+        json.dump(d, f)

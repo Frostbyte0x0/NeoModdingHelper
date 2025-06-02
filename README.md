@@ -29,6 +29,8 @@ the program should find the files and folders automatically
 │   └── main
 │       └── java
 │           └── your.file.signature (ex: org.exodusstudio.frostbite)
+│               ├── client
+│               │   └── ClientEvent.java (11)
 │               ├── common
 │               │   ├── block
 │               │   ├── entity
@@ -46,14 +48,14 @@ the program should find the files and folders automatically
 │               │   ├── item
 │               │   │   └── custom (9)
 │               │   │       └── GenericCustomItem.java
-│               │   ├── particle
+│               │   ├── particle (10)
 │               │   │   └── CustomParticle.java
 │               │   │   └── CustomParticleType.java
 │               │   └── registry
 │               │       └── BlockRegistry.java
 │               │       └── EntityRegistry.java (7)
 │               │       └── ItemRegistry.java (8)
-│               │       └── ParticleRegistry.java
+│               │       └── ParticleRegistry.java (12)
 │               └── YourMainModFile.java (1)
 </pre>
 
@@ -62,8 +64,8 @@ that aren't at their place starting from the end of your file signature
 (in the same file as 'common'). 
 Here is a guide as to what each key should lead to:  
 - PACKAGE: The package path that is at the top of custom classes 
-  (ex: org.exodusstudio.frostbite),
-- MOD_ID: The mod id of the mod (who would have guessed),
+  (ex: org.exodusstudio.frostbite) (necessary),
+- MOD_ID: The mod id of the mod (who would have guessed) (necessary),
 - MAIN_MOD_FILE_LOCATION: Your main mod file (1),
 - LAYERS_LOCATION: The file containing all ModelLayerLocations (2),
 - LAYER_REGISTRY_LOCATION: The file where you register the layers (3)
@@ -78,9 +80,9 @@ Here is a guide as to what each key should lead to:
   EntityAttributeCreationEvent event),
 - ITEM_REGISTRY_LOCATION: The registry file for entities (8),
 - ITEM_FOLDER_LOCATION: The folder where the item classes should go (9)
-- PARTICLE_FOLDER_LOCATION: ,
-- CLIENT_EVENT_LOCATION: ,
-- PARTICLE_REGISTRY_LOCATION: 
+- PARTICLE_FOLDER_LOCATION: The folder where the particle classes should go (10),
+- CLIENT_EVENT_LOCATION: The file where you register the particle providers (11),
+- PARTICLE_REGISTRY_LOCATION: The file where you register your particle (12)
 
 Then, in the 'offsets' section, you can put the offset (in lines) 
 for when writing to each file. In the 'offsets_from_bottom' section, 
