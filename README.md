@@ -35,13 +35,13 @@ the program should find the files and folders automatically
 │               │   ├── block (13)
 │               │   │   └── GenericCustomBlock.java
 │               │   ├── entity
-│               │   │   └── client
-│               │   │       └── layers
-│               │   │           └── ModModelLayers.java (2)
-│               │   │       └── models (5)
-│               │   │           └── CustomEntityModel.java
-│               │   │       └── renderers (4)
-│               │   │           └── CustomEntityRenderer.java
+│               │   │   ├── client
+│               │   │   │   ├── layers
+│               │   │   │   │   └── ModModelLayers.java (2)
+│               │   │   │   ├── models (5)
+│               │   │   │   │   └── CustomEntityModel.java
+│               │   │   │   └── renderers (4)
+│               │   │   │       └── CustomEntityRenderer.java
 │               │   │   └── custom (6)
 │               │   │       └── CustomEntityClass.java
 │               │   ├── event
@@ -50,12 +50,12 @@ the program should find the files and folders automatically
 │               │   │   └── custom (9)
 │               │   │       └── GenericCustomItem.java
 │               │   ├── particle (10)
-│               │   │   └── CustomParticle.java
+│               │   │   ├── CustomParticle.java
 │               │   │   └── CustomParticleType.java
 │               │   └── registry
-│               │       └── BlockRegistry.java (14)
-│               │       └── EntityRegistry.java (7)
-│               │       └── ItemRegistry.java (8)
+│               │       ├── BlockRegistry.java (14)
+│               │       ├── EntityRegistry.java (7)
+│               │       ├── ItemRegistry.java (8)
 │               │       └── ParticleRegistry.java (12)
 │               └── YourMainModFile.java (1)
 </pre>
