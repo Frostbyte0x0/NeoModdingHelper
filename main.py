@@ -142,8 +142,7 @@ def undo_block(camel_name: str, is_custom: bool):
     temp = load_template("block_lang", camel_name)
     erase_from_file(signature_assets + "lang/en_us.json", temp)
     # Custom ? custom class : just registry
-    if "y" in input("Is it a custom block (should a custom class be made)? (y/n) > ").lower():
-        temp = load_template("block_class", camel_name)
+    if is_custom:
         erase_file(constants["BLOCK_FOLDER_LOCATION"] + f"/{camel_name.capitalize()}Block.java")
         temp = load_template("block_registry_custom", camel_name)
         erase_from_file(constants["BLOCK_REGISTRY_LOCATION"], temp)
