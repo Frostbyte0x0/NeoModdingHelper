@@ -109,4 +109,4 @@ def save_last_action(last_action: str, name: str, is_custom: bool):
          "name": name,
          "is_custom": is_custom}
     with open("last_action.json", "w") as f:
-        json.dump(d, f)
+        json.dump(d, f, indent=2)

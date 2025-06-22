@@ -32,15 +32,16 @@ the program should find the files and folders automatically
 │               ├── client
 │               │   └── ClientEvent.java (11)
 │               ├── common
-│               │   ├── block
+│               │   ├── block (13)
+│               │   │   └── GenericCustomBlock.java
 │               │   ├── entity
-│               │   │   └── client
-│               │   │       └── layers
-│               │   │           └── ModModelLayers.java (2)
-│               │   │       └── models (5)
-│               │   │           └── CustomEntityModel.java
-│               │   │       └── renderers (4)
-│               │   │           └── CustomEntityRenderer.java
+│               │   │   ├── client
+│               │   │   │   ├── layers
+│               │   │   │   │   └── ModModelLayers.java (2)
+│               │   │   │   ├── models (5)
+│               │   │   │   │   └── CustomEntityModel.java
+│               │   │   │   └── renderers (4)
+│               │   │   │       └── CustomEntityRenderer.java
 │               │   │   └── custom (6)
 │               │   │       └── CustomEntityClass.java
 │               │   ├── event
@@ -49,12 +50,12 @@ the program should find the files and folders automatically
 │               │   │   └── custom (9)
 │               │   │       └── GenericCustomItem.java
 │               │   ├── particle (10)
-│               │   │   └── CustomParticle.java
+│               │   │   ├── CustomParticle.java
 │               │   │   └── CustomParticleType.java
 │               │   └── registry
-│               │       └── BlockRegistry.java
-│               │       └── EntityRegistry.java (7)
-│               │       └── ItemRegistry.java (8)
+│               │       ├── BlockRegistry.java (14)
+│               │       ├── EntityRegistry.java (7)
+│               │       ├── ItemRegistry.java (8)
 │               │       └── ParticleRegistry.java (12)
 │               └── YourMainModFile.java (1)
 </pre>
@@ -81,8 +82,11 @@ Here is a guide as to what each key should lead to:
 - ITEM_REGISTRY_LOCATION: The registry file for entities (8),
 - ITEM_FOLDER_LOCATION: The folder where the item classes should go (9)
 - PARTICLE_FOLDER_LOCATION: The folder where the particle classes should go (10),
-- CLIENT_EVENT_LOCATION: The file where you register the particle providers (11),
+- CLIENT_EVENT_LOCATION: The file where you register the particle providers (11) 
+  (here it is done with the RegisterParticleProvidersEvent event),
 - PARTICLE_REGISTRY_LOCATION: The file where you register your particle (12)
+- BLOCK_FOLDER_LOCATION: The folder where the block classes should go (13),
+- BLOCK_REGISTRY_LOCATION: The file where you register your block (14)
 
 Then, in the 'offsets' section, you can put the offset (in lines) 
 for when writing to each file. In the 'offsets_from_bottom' section, 
