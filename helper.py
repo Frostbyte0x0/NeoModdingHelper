@@ -5,11 +5,17 @@ mod_id = ""
 package = ""
 
 def camel_to_snake(string: str):
-    return "_".join([s.lower() for s in string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ")])
+    individual_words = [""]
+    for s in string:
+        if s.isupper():
+            individual_words.append(s.lower())
+        else:
+            individual_words[-1] += s
+    return "_".join(individual_words)
 
 def snake_to_camel(string: str):
-    return "".join([s.capitalize() for s in string.split("_")])
-
+    base = "".join([s.capitalize() for s in string.split("_")])
+    return base[0].lower() + base[1:]
 
 def select_from_menu(options: list[str]) -> int:
     for i in range(len(options)):

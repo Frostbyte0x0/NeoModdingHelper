@@ -7,8 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 public class ^PItem extends Item {
-    private boolean used;
-
     public ^PItem(Properties pProperties) {
         super(pProperties);
     }
