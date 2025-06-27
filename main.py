@@ -12,16 +12,16 @@ offsets_from_bottom = {}
 def start_entity(camel_name: str):
     # Model
     temp = load_template("entity_model", camel_name)
-    write_to_new_file(constants["MODEL_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Model.java", temp)
+    write_to_new_file(constants["MODEL_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Model.java", temp)
     # Renderer
     temp = load_template("entity_renderer", camel_name)
-    write_to_new_file(constants["RENDERER_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Renderer.java", temp)
+    write_to_new_file(constants["RENDERER_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Renderer.java", temp)
     # Layers
     temp = load_template("entity_layer", camel_name)
     write_to_file(constants["LAYERS_LOCATION"], temp, offsets["LAYERS_OFFSET"], offsets_from_bottom["LAYERS_OFFSET"])
     # Actual entity class
     temp = load_template("entity_class", camel_name)
-    write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Entity.java", temp)
+    write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Entity.java", temp)
     # Register renderer
     temp = load_template("entity_renderer_registry", camel_name)
     write_to_file(constants["MAIN_MOD_FILE_LOCATION"], temp, offsets["RENDERER_REGISTRY_OFFSET"], offsets_from_bottom["RENDERER_REGISTRY_OFFSET"])
@@ -39,14 +39,14 @@ def start_entity(camel_name: str):
 
 def undo_entity(camel_name: str):
     # Model
-    erase_file(constants["MODEL_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Model.java")
+    erase_file(constants["MODEL_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Model.java")
     # Renderer
-    erase_file(constants["RENDERER_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Renderer.java")
+    erase_file(constants["RENDERER_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Renderer.java")
     # Layers
     temp = load_template("entity_layer", camel_name)
     erase_from_file(constants["LAYERS_LOCATION"], temp)
     # Actual entity class
-    erase_file(constants["ENTITY_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Entity.java")
+    erase_file(constants["ENTITY_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Entity.java")
     # Register renderer
     temp = load_template("entity_renderer_registry", camel_name)
     erase_from_file(constants["MAIN_MOD_FILE_LOCATION"], temp)
@@ -75,7 +75,7 @@ def start_item(camel_name: str):
     # Custom ? custom class : just registry
     if "y" in input("Is it a custom item (should a custom class be made)? (y/n) > ").lower():
         temp = load_template("item_class", camel_name)
-        write_to_new_file(constants["ITEM_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Item.java", temp)
+        write_to_new_file(constants["ITEM_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Item.java", temp)
         temp = load_template("item_registry_custom", camel_name)
         write_to_file(constants["ITEM_REGISTRY_LOCATION"], temp, offsets["ITEM_REGISTRY_OFFSET"],
                       offsets_from_bottom["ITEM_REGISTRY_OFFSET"])
@@ -95,7 +95,7 @@ def undo_item(camel_name: str, is_custom: bool):
     erase_file(signature_assets + f"models/item/{snake_name}.json")
     # Custom ? custom class : just registry
     if is_custom:
-        erase_file(constants["ITEM_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Item.java")
+        erase_file(constants["ITEM_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Item.java")
         temp = load_template("item_registry_custom", camel_name)
         erase_from_file(constants["ITEM_REGISTRY_LOCATION"], temp)
     else:
@@ -112,7 +112,7 @@ def start_block(camel_name: str):
     temp = load_template("block_blockstate_json", camel_name)
     write_to_new_file(signature_assets + "blockstates", f"{snake_name}.json", temp)
     # Model json
-    temp = load_template("block_model", camel_name)
+    temp = load_template("block_model_json", camel_name)
     write_to_new_file(signature_assets + "models/block", f"{snake_name}.json", temp)
     # Lang
     temp = load_template("block_lang", camel_name)
@@ -120,7 +120,7 @@ def start_block(camel_name: str):
     # Custom ? custom class : just registry
     if "y" in input("Is it a custom block (should a custom class be made)? (y/n) > ").lower():
         temp = load_template("block_class", camel_name)
-        write_to_new_file(constants["BLOCK_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Block.java", temp)
+        write_to_new_file(constants["BLOCK_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Block.java", temp)
         temp = load_template("block_registry_custom", camel_name)
         write_to_file(constants["BLOCK_REGISTRY_LOCATION"], temp, offsets["BLOCK_REGISTRY_OFFSET"],
                       offsets_from_bottom["BLOCK_REGISTRY_OFFSET"])
@@ -143,7 +143,7 @@ def undo_block(camel_name: str, is_custom: bool):
     erase_from_file(signature_assets + "lang/en_us.json", temp)
     # Custom ? custom class : just registry
     if is_custom:
-        erase_file(constants["BLOCK_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Block.java")
+        erase_file(constants["BLOCK_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Block.java")
         temp = load_template("block_registry_custom", camel_name)
         erase_from_file(constants["BLOCK_REGISTRY_LOCATION"], temp)
         save_last_action("block", camel_name, True)
@@ -157,10 +157,10 @@ def start_particle(camel_name: str):
     if "n" in input("Is it a simple particle type (if not, a custom particle type will be made)? (y/n) > ").lower():
         # if not SimpleParticleType -> Particle type class
         temp = load_template("particle_type_class", camel_name)
-        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}ParticleType.java", temp)
+        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}ParticleType.java", temp)
         # Particle class
         temp = load_template("particle_class_custom", camel_name)
-        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Particle.java", temp)
+        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Particle.java", temp)
         # Registry
         temp = load_template("particle_registry_custom", camel_name)
         write_to_file(constants["PARTICLE_REGISTRY_LOCATION"], temp, offsets["PARTICLE_REGISTRY_OFFSET"],
@@ -169,7 +169,7 @@ def start_particle(camel_name: str):
     else:
         # Particle class
         temp = load_template("particle_class_simple", camel_name)
-        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_name[0].upper() + camel_name[1:]}Particle.java", temp)
+        write_to_new_file(constants["PARTICLE_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Particle.java", temp)
         # Registry
         temp = load_template("particle_registry_simple", camel_name)
         write_to_file(constants["PARTICLE_REGISTRY_LOCATION"], temp, offsets["PARTICLE_REGISTRY_OFFSET"],
@@ -187,15 +187,15 @@ def start_particle(camel_name: str):
 def undo_particle(camel_name: str, is_custom: bool):
     if is_custom:
         # if not SimpleParticleType -> Particle type class
-        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}ParticleType.java")
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}ParticleType.java")
         # Particle class
-        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Particle.java")
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Particle.java")
         # Registry
         temp = load_template("particle_registry_custom", camel_name)
         erase_from_file(constants["PARTICLE_REGISTRY_LOCATION"], temp)
     else:
         # Particle class
-        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_name[0].upper() + camel_name[1:]}Particle.java")
+        erase_file(constants["PARTICLE_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Particle.java")
         # Registry
         temp = load_template("particle_registry_simple", camel_name)
         erase_from_file(constants["PARTICLE_REGISTRY_LOCATION"], temp)
@@ -278,6 +278,8 @@ def define_constants(folder: str):
     constants["PARTICLE_FOLDER_LOCATION"] = signature + "common/particle"
     constants["CLIENT_EVENT_LOCATION"] = signature + "client/ClientEvent.java"
     constants["PARTICLE_REGISTRY_LOCATION"] = signature + "common/registry/ParticleRegistry.java"
+    constants["BLOCK_FOLDER_LOCATION"] = signature + "common/block"
+    constants["BLOCK_REGISTRY_LOCATION"] = signature + "common/registry/BlockRegistry.java"
     constants["MOD_ID"] = saved["MOD_ID"] if saved["MOD_ID"] != "" else input("What is the mod id? > ")
 
     for key, value in saved.items():

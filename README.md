@@ -8,8 +8,8 @@ You should put the 'Modding Helper' folder in the same folder as your mod
 <pre>
 /folder
 ├── Modding Helper <--
-│   └── main.py
-│   └── templates
+│   ├── main.py
+│   ├── templates
 │   └── etc
 ├── Your main mod file
 │   └── src

@@ -1,1 +1,5 @@
-{"last_action": "item", "name": "thermalLens", "is_custom": true}
+{
+  "last_action": "undo item",
+  "name": "weavingTable",
+  "is_custom": false
+}

@@ -13,6 +13,9 @@ def camel_to_snake(string: str):
             individual_words[-1] += s
     return "_".join(individual_words)
 
+def camel_to_pascal(string: str):
+    return string[0].upper() + string[1:]
+
 def snake_to_camel(string: str):
     base = "".join([s.capitalize() for s in string.split("_")])
     return base[0].lower() + base[1:]
@@ -40,7 +43,7 @@ def load_template(file: str, camel_name: str):
 
     snake_name = camel_to_snake(camel_name)
 
-    template = (template.replace("^P", camel_name.capitalize())
+    template = (template.replace("^P", camel_to_pascal(camel_name))
                 .replace("^S", snake_name)
                 .replace("^U", snake_name.upper())
                 .replace("^M", mod_id)
