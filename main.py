@@ -111,6 +111,9 @@ def start_block(camel_name: str):
     # Blockstate json
     temp = load_template("block_blockstate_json", camel_name)
     write_to_new_file(signature_assets + "blockstates", f"{snake_name}.json", temp)
+    # Item json
+    temp = load_template("block_item_json", camel_name)
+    write_to_new_file(signature_assets + "items", f"{snake_name}.json", temp)
     # Model json
     temp = load_template("block_model_json", camel_name)
     write_to_new_file(signature_assets + "models/block", f"{snake_name}.json", temp)
@@ -136,6 +139,8 @@ def undo_block(camel_name: str, is_custom: bool):
     snake_name = camel_to_snake(camel_name)
     # Blockstate json
     erase_file(signature_assets + f"blockstates/{snake_name}.json")
+    # Item json
+    erase_file(signature_assets + f"items/{snake_name}.json")
     # Model json
     erase_file(signature_assets + f"models/block/{snake_name}.json")
     # Lang
