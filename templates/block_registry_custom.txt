@@ -1,4 +1,4 @@
 
-    public static final DeferredBlock<Block> ^U_BLOCK = registerBLock("^S_block",
+    public static final DeferredBlock<Block> ^U_BLOCK = registerBLock("^S",
             () -> new ^PBlock(BlockBehaviour.Properties.of().strength(10f)
-                    .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(^P.MOD_ID, "^S_block")))));
+                    .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(^M.MOD_ID, "^S_block")))));
