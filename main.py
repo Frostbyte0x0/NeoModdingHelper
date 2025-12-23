@@ -20,8 +20,20 @@ def start_entity(camel_name: str):
     temp = load_template("entity_layer", camel_name)
     write_to_file(constants["LAYERS_LOCATION"], temp, offsets["LAYERS_OFFSET"], offsets_from_bottom["LAYERS_OFFSET"])
     # Actual entity class
-    temp = load_template("entity_class", camel_name)
-    write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Entity.java", temp)
+    if "n" in input("Is it a boss? (y/n) > ").lower():
+        temp = load_template("entity_class", camel_name)
+        write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Entity.java", temp)
+        save_last_action("entity", camel_name, False)
+    else:
+        temp = load_template("entity_boss_class", camel_name)
+        write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}Entity.java", temp)
+        # AI class
+        temp = load_template("entity_ai_class", camel_name)
+        write_to_new_file(constants["ENTITY_FOLDER_LOCATION"], f"{camel_to_pascal(camel_name)}AI.java", temp)
+        # Lang boss bar
+        temp = load_template("entity_boss_bar", camel_name)
+        write_to_file(signature_assets + "lang/en_us.json", temp, 1, True)
+        save_last_action("entity", camel_name, True)
     # Register renderer
     temp = load_template("entity_renderer_registry", camel_name)
     write_to_file(constants["MAIN_MOD_FILE_LOCATION"], temp, offsets["RENDERER_REGISTRY_OFFSET"], offsets_from_bottom["RENDERER_REGISTRY_OFFSET"])
@@ -34,10 +46,9 @@ def start_entity(camel_name: str):
     # Register attribute
     temp = load_template("entity_attribute_registry", camel_name)
     write_to_file(constants["ATTRIBUTE_REGISTRY_LOCATION"], temp, offsets["ATTRIBUTE_REGISTRY_OFFSET"], offsets_from_bottom["ATTRIBUTE_REGISTRY_OFFSET"])
-    save_last_action("entity", camel_name, True)
 
 
-def undo_entity(camel_name: str):
+def undo_entity(camel_name: str, is_boss: bool):
     # Model
     erase_file(constants["MODEL_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}Model.java")
     # Renderer
@@ -59,6 +70,12 @@ def undo_entity(camel_name: str):
     # Register attribute
     temp = load_template("entity_attribute_registry", camel_name)
     erase_from_file(constants["ATTRIBUTE_REGISTRY_LOCATION"], temp)
+    if is_boss:
+        # AI class
+        erase_file(constants["ENTITY_FOLDER_LOCATION"] + f"/{camel_to_pascal(camel_name)}AI.java")
+        # Lang boss bar
+        temp = load_template("entity_boss_bar", camel_name)
+        erase_from_file(signature_assets + "lang/en_us.json", temp)
 
 
 def start_item(camel_name: str):
@@ -184,7 +201,7 @@ def start_particle(camel_name: str):
     temp = load_template("particle_provider_registry", camel_name)
     write_to_file(constants["CLIENT_EVENT_LOCATION"], temp, offsets["CLIENT_EVENT_OFFSET"],
                   offsets_from_bottom["CLIENT_EVENT_OFFSET"])
-    # Add to particle json
+    # Add to particle JSON
     temp = load_template("particle_json", camel_name)
     write_to_new_file(signature_assets + "particles", f"{camel_to_snake(camel_name)}.json", temp)
 
@@ -220,7 +237,7 @@ def undo():
 
     match option.split(" ")[0]:
         case "entity":
-            undo_entity(name)
+            undo_entity(name, options["is_custom"])
         case "item":
             undo_item(name, options["is_custom"])
         case "block":

@@ -1,0 +1,4 @@
+  "item.frostbite.wool_lining_helmet": "Wool lining helmet",
+  "item.frostbite.wool_lining_chestplate": "Wool lining chestplate",
+  "item.frostbite.wool_lining_leggings": "Wool lining leggings",
+  "item.frostbite.wool_lining_boots": "Wool lining boots",
